@@ -2,6 +2,6 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/vendor/list": "pages/vendor/list.js",
+  "/dashboard": "pages/dashboard.js",
   "/vendor/new": "pages/vendor/new.js"
 }

@@ -24,10 +24,10 @@
       "static/chunks/webpack.js",
       "static/chunks/pages/_error.js"
     ],
-    "/vendor/list": [
+    "/dashboard": [
       "static/chunks/main.js",
       "static/chunks/webpack.js",
-      "static/chunks/pages/vendor/list.js"
+      "static/chunks/pages/dashboard.js"
     ],
     "/vendor/new": [
       "static/chunks/main.js",
