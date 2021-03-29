@@ -1,16 +1,83 @@
 import { Card, Elevation, Button, Intent, Radio, RadioGroup, Icon, Dialog, AnchorButton, Classes as CoreClasses, Position } from "@blueprintjs/core"
 import { IToasterProps, IToastProps, Toaster, ToasterPosition } from "@blueprintjs/core"
-import { Cell, Column, Table, TableLoadingOption, SelectionModes } from "@blueprintjs/table"
 import { Classes, Popover2, Tooltip2 } from "@blueprintjs/popover2"
-import CurrencySelect from '../../components/CurrencySelect'
 import { useState } from 'react'
 import styles from './Vendor.module.css'
 import "@blueprintjs/popover2/lib/css/blueprint-popover2.css"
 import "@blueprintjs/table/lib/css/table.css"
-import { DateInput, IDateFormatProps } from "@blueprintjs/datetime";
-import 'react-day-picker/lib/style.css';
+import { useRouter } from 'next/router'
+import axios from "axios";
 
 export default function ItemDetail(props) {
+
+    const [skeleton, setSkeleton] = useState()
+    const router = useRouter()
+    const [isOpen, setIsOpen] = useState(false)
+
+    const [code, setCode] = useState()
+    const [name, setName] = useState()
+    const [building, setBuilding] = useState()
+    const [street, setStreet] = useState()
+    const [area, setArea] = useState()
+    const [country, setCountry] = useState()
+    const [remarks, setRemarks] = useState()
+    const [contact, setContact] = useState()
+    const [email, setEmail] = useState()
+    const [position, setPosition] = useState()
+    const [phone, setPhone] = useState()
+    const [fax, setFax] = useState()
+    const [mobile, setMobile] = useState()
+
+    const handlesetCode = (e) => {
+        setCode(e.target.value)
+    }
+    const handlesetName = (e) => {
+        setName(e.target.value)
+    }
+    const handlesetBuilding = (e) => {
+        setBuilding(e.target.value)
+    }
+    const handlesetStreet = (e) => {
+        setStreet(e.target.value)
+    }
+    const handlesetArea = (e) => {
+        setArea(e.target.value)
+    }
+    const handlesetCountry = (e) => {
+        setCountry(e.target.value)
+    }
+    const handlesetRemarks = (e) => {
+        setRemarks(e.target.value)
+    }
+    const handlesetContact = (e) => {
+        setContact(e.target.value)
+    }
+    const handlesetPosition = (e) => {
+        setPosition(e.target.value)
+    }
+    const handlesetEmail = (e) => {
+        setEmail(e.target.value)
+    }
+    const handlesetPhone = (e) => {
+        setPhone(e.target.value)
+    }
+    const handlesetFax = (e) => {
+        setFax(e.target.value)
+    }
+    const handlesetMobile = (e) => {
+        setMobile(e.target.value)
+    }
+
+    const dialogOptions = {
+        autoFocus: true,
+        canEscapeKeyClose: true,
+        canOutsideClickClose: true,
+        enforceFocus: true,
+        usePortal: true,
+    }
+
+    const handleOpen = () => setIsOpen(true)
+    const handleClose = () => setIsOpen(false)
 
     const Spacer = (props) => {
         return (
@@ -27,47 +94,21 @@ export default function ItemDetail(props) {
         )
     }
 
-    const Item = (props) => {
-        return (
-            <div className="row align-middle" style={{ backgroundColor: 'transparent' }}>
-                <div className="col-md-2" style={{ backgroundColor: 'transparent' }}>
-                    <span className={styles.itemTitle}>{props.label}</span>
-                </div>
-                <div className="col-md-10" style={{ backgroundColor: 'transparent' }}>
-                    <span className={`${styles.itemInfo} ${skeleton}`}>{props.text}</span>
-                </div>
-            </div>
-        )
-    }
+    const gotoListing = (e) => {
+        e.preventDefault()
+        router.push("/vendor/list")
+      }
 
     const ActionButtons = (props) => {
         return (
             <div className="row" style={{ backgroundColor: 'transparent' }}>
-                <div className="col">
-                    <span className={styles.sectionHeader}>{props.title}</span>
-                </div>
                 <div className="col" style={{ textAlign: 'end' }}>
-                    <Button text="SAVE" intent={Intent.PRIMARY} onClick={successToast} small={true} style={{ marginRight: 5 }} />
-                    <Button text="DONE" intent={Intent.DANGER} onClick={errorToast} small={true} />
+                    <Button text="SAVE" intent={Intent.PRIMARY} onClick={saveData} small={true} style={{ marginRight: 5 }} />
+                    <Button text="CANCEL" intent={Intent.DANGER} onClick={gotoListing} small={true} />
                 </div>
                 <hr className={styles.hr} />
             </div>
         )
-    }
-
-    const selectCustomer = (e) => {
-        setCustomer(e.target.value)
-        setCustomerName(e.target.dataset.name)
-        setCategory(e.target.dataset.cat)
-    }
-
-    const selectLetterhead = (e) => {
-        setLetterhead(e.target.value)
-    }
-
-    const selectexchangerate = (e) => {        
-        setExchangerate(e.exchange_rate)
-        setCurrency(e.currency_code)
     }
 
     let toaster: Toaster
@@ -102,12 +143,44 @@ export default function ItemDetail(props) {
         })
     }
 
+    const saveData = async () => {
+        const options = {
+            headers: {'Authorization': 'Bearer ' + `${props.token}`}
+        }
+        const body = {
+            Company_Code: code,
+            Company: name,
+            Building: building,
+            Street: street,
+            Area: area,
+            Country: country,
+            Remarks: remarks,
+            Contact: contact,
+            Position: position,
+            Phone: phone,
+            email: email,
+            Fax: fax,
+            Telex: mobile
+        }
+        const result = await axios.post('http://localhost:3000/api/v1/vendor/add', body, options)
+        addToast({
+            icon: "tick",
+            intent: Intent.PRIMARY,
+            message: (
+                <>
+                    Successfully saved data. Vendor Code: <em>{code}</em>
+                </>
+            )
+        })
+        router.push("/vendor/list")
+    }
+
     const Input = (props) => {
         const styleName = `bp3-input bp3-intent-${props.intent}`
         return (
             <div className="row">
                 <div className="" style={{ width: 100, backgroundColor: 'transparent', textAlign: "end" }}>
-                    <Tooltip2 content={<span>Search {props.label}</span>} placement="left" intent="primary" usePortal={true}>
+                    <Tooltip2 content={<span>Enter {props.label}</span>} placement="left" intent="primary" usePortal={true}>
                         <span className={styles.itemTitle}>{props.label}</span>
                     </Tooltip2>
                 </div>
@@ -116,7 +189,7 @@ export default function ItemDetail(props) {
                         {props.iconLeft &&
                             <Icon icon={props.iconLeft} iconSize={14} className="mx-2 pt-1" />
                         }
-                        <input type="text" className={styleName} onBlur={validateData} placeholder={props.placeholder} defaultValue={props.defaultValue} data-validate={props.validate} />
+                        <input type="text" className={styleName} placeholder={props.placeholder} onBlur={props.onChange} defaultValue={props.defaultValue} data-validate={props.validate} />
                         {props.iconRight &&
                             <Icon icon={props.iconRight} iconSize={14} className="mx-2 pt-1" />
                         }
@@ -126,74 +199,8 @@ export default function ItemDetail(props) {
                     </div>
                 </div>
 
-                <div style={{ width: 20, backgroundColor: 'transparent' }}>
-                    <Popover2
-                        interactionKind="click"
-                        popoverClassName={Classes.POPOVER2_CONTENT_SIZING}
-                        placement="right"
-                        content={
-                            <div key="text" style={{ width: 300, height: 300 }}>
-                                <h5 className="text-center pb-1">{props.searchlabel} Selection</h5>
-                                <hr className={styles.hr} />
-                                <h6 className="text-center pb-1">Last 5 Selected {props.searchlabel}</h6>
-                                <hr className={styles.hr} style={{ paddingBottom: 10 }} />
-                                <div>
-                                    {props.action=='goSearch' &&
-                                        <RadioGroup onChange={selectCustomer} selectedValue={customer}>
-                                            <Radio label="ARA - Alex Ramil Aguel" value="ARA" data-cat="1" data-name="Alex Ramil Aguel" />
-                                            <Radio label="BIB - Bobby Ishimizu" value="BIB" data-cat="2" data-name="Bobby Ishimizu" />
-                                            <Radio label="TWW - Tommy Wong" value="TWW" data-cat="3" data-name="Tommy Wong" />
-                                            <Radio label="THG - Tiger Huang" value="THG" data-cat="A" data-name="Tiger Huang" />
-                                            <Radio label="TMF - Tommy Fu" value="TMF" data-cat="B" data-name="Tommy Fu" />
-                                        </RadioGroup>
-                                    }
-                                    {props.action=='goSearchLetterHead' &&
-                                        <RadioGroup onChange={selectLetterhead} selectedValue={letterhead}>
-                                            <Radio label="101 - 123 HONG KONG LIMITED" value="123 HONG KONG LIMITED" />
-                                            <Radio label="CTM01 - Test Letterhead" value="Test Letterhead" />
-                                            <Radio label="201 - HSB WEBWORKS" value="HSB WEBWORKS" />
-                                        </RadioGroup>
-                                    }
-                                </div>
-                                <hr className={styles.hr} />
-                                <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 15 }}>
-                                    <Button className={Classes.POPOVER2_DISMISS} style={{ marginRight: 10 }}>Close</Button>
-                                    <Button intent={Intent.DANGER} onClick={handleOpen} className={Classes.POPOVER2_DISMISS}>Full Search</Button>
-                                </div>
-                            </div>
-                        }
-                        renderTarget={({ isOpen, ref, ...targetProps }) => (
-                            <div>
-                                {props.action &&
-                                    <Tooltip2 content={<span>Search {props.searchlabel}</span>} placement="right" intent="primary" usePortal={true}>
-                                        <Button icon="zoom-in" minimal={true} small={true} {...targetProps} elementRef={ref} intent="primary" text="" />
-                                    </Tooltip2>
-                                }
-
-                            </div>
-                        )}
-                    />
-                </div>
-
                 <Spacer height={props.spacer} />
 
-            </div>
-        )
-    }
-
-    const Suggest = (props) => {
-        const styleName = `bp3-input bp3-intent-${props.intent}`
-        return (
-            <div className="row">
-                <div className="" style={{ width: 100, backgroundColor: 'transparent', textAlign: "end" }}>
-                    <Tooltip2 content={<span>Search {props.label}</span>} placement="left" intent="primary" usePortal={true}>
-                        <span className={styles.itemTitle}>{props.label}</span>
-                    </Tooltip2>
-                </div>
-                <div className="col" style={{ marginRight: 20 }}>
-                    <CurrencySelect onExchangerateChange={selectexchangerate} currency={currency} />
-                </div>
-                <Spacer height={props.spacer} />
             </div>
         )
     }
@@ -215,146 +222,7 @@ export default function ItemDetail(props) {
 
     const validateData = (e) => {
         /** PERFORM VALIDATION ***/
-        if (e.target.dataset.validate == 'paycode') {
-            let isfound = false
-            Object.keys(paymenttermData[0]).map(function(key, index) {
-                if (paymenttermData[index]) {
-                    if (e.target.value == paymenttermData[index].code) {
-                        setPaycode(paymenttermData[index].code)
-                        setPaydesc(paymenttermData[index].description)
-                        isfound = true
-                    }
-                }
-            })
-            if (isfound == false && e.target.value != '') {
-                alert('Payment Code Not Found!')
-                setPaycode('')
-                setPaydesc('')
-                e.target.value = ''
-            }
-        }
-    }
-
-    const goSearch = (e) => {
-        e.preventDefault()
-        // DO SOMETHING
-    }
-
-    const goSearchLetterHead = (e) => {
-        e.preventDefault()
-        // DO SOMETHING
-    }
-
-    interface IDetailData {
-        [key: string]: number | string;
-    }
-
-    const detailData: IDetailData[] = require("../../data/quotation.json")
-
-    interface IPaymentTermsData {
-        [key: string]: number | string;
-    }
-
-    const paymenttermData: IPaymentTermsData[] = require("../../data/paymentterm.json")
-
-    const [skeleton, setSkeleton] = useState()
-    const [customer, setCustomer] = useState()
-    const [customername, setCustomerName] = useState()
-    const [category, setCategory] = useState<any | null>(null)
-    const [letterhead, setLetterhead] = useState()
-    const [currency, setCurrency] = useState()
-    const [exchangerate, setExchangerate] = useState<any | null>(null)
-    const [isOpen, setIsOpen] = useState(false)
-
-    const [paycode, setPaycode] = useState<any | null>(null)
-    const [paydesc, setPaydesc] = useState<any | null>(null)
-
-    const getLoadingOptions = () => {
-        let loadingOptions: TableLoadingOption[] = []
-        if (skeleton) loadingOptions = [TableLoadingOption.CELLS, TableLoadingOption.COLUMN_HEADERS, TableLoadingOption.ROW_HEADERS]
-        return loadingOptions
-    }
-
-    const formatColumnName = (columnName: string) => {
-        return columnName.replace(/([A-Z])/g, " $1").replace(/^./, firstCharacter => firstCharacter.toUpperCase())
-    }
-
-    const renderCell = (rowIndex: number, columnIndex: number) => {
-        const detailItem = detailData[rowIndex]
-        return <Cell>{detailItem[Object.keys(detailItem)[columnIndex]]}</Cell>
-    }
-
-    const DataGrid = (props) => {
-        const columns = Object.keys(detailData[0]).map((columnName, index) => (
-            <Column key={index} name={formatColumnName(columnName)} cellRenderer={renderCell} />
-        ))
-
-        const cellRenderer = (rowIndex: number) => {
-            return <Cell>{`$${(rowIndex * 10).toFixed(2)}`}</Cell>
-        }
-
-        return (
-            <div className="row">
-                <div className="col" style={{ width: 100 }}>
-                    <Table className="w-100" numRows={detailData.length} loadingOptions={getLoadingOptions()} selectionModes={SelectionModes.ALL}>
-                        {columns}
-                        {/*}
-                       <Column key={1} name="Item" cellRenderer={renderCell} className="" />
-                       <Column key={2} name="Description" cellRenderer={renderCell} className="" />
-                       <Column key={3} name="Specification" cellRenderer={renderCell} className="" />
-                       <Column key={4} name="ETD" cellRenderer={renderCell} className="" /> */}
-                    </Table>
-                </div>
-            </div>
-        )
-    }
-
-    const dialogOptions = {
-        autoFocus: true,
-        canEscapeKeyClose: true,
-        canOutsideClickClose: true,
-        enforceFocus: true,
-        usePortal: true,
-    }
-
-    const handleOpen = () => setIsOpen(true)
-    const handleClose = () => setIsOpen(false)
-
-    const jsDateFormatter: IDateFormatProps = {
-        // note that the native implementation of Date functions differs between browsers
-        formatDate: date => date.toLocaleDateString(),
-        parseDate: str => new Date(str),
-        placeholder: "DD/MM/YYYY",
-    };
-
-    const Datefield = (props) => {
-        const styleName = `bp3-input bp3-intent-${props.intent}`
-        return (
-            <div className="row">
-                <div className="" style={{ width: 100, backgroundColor: 'transparent', textAlign: "end" }}>
-                    <Tooltip2 content={<span>Search {props.label}</span>} placement="left" intent="primary" usePortal={true}>
-                        <span className={styles.itemTitle}>{props.label}</span>
-                    </Tooltip2>
-                </div>
-                <div className="col">
-                    <div className="bp3-input-group bp3-small" style={{ borderColor: "white", }}>
-                        {props.iconLeft &&
-                            <Icon icon={props.iconLeft} iconSize={14} className="mx-2 pt-1" />
-                        }
-                        <DateInput {...jsDateFormatter} defaultValue={new Date()} />
-                        {props.iconRight &&
-                            <Icon icon={props.iconRight} iconSize={14} className="mx-2 pt-1" />
-                        }
-                        {props.required &&
-                            <span className="bp3-icon bp3-minimal bp3-small bp3-icon-dot bp3-intent-danger"></span>
-                        }
-                    </div>
-                </div>
-
-                <Spacer height={props.spacer} />
-
-            </div>
-        )
+        if (e.target.value == '') alert('Please input value')
     }
 
     const TextAreafield = (props) => {
@@ -368,7 +236,7 @@ export default function ItemDetail(props) {
                 </div>
                 <div className="col">
                     <div className="bp3-small" style={{ borderColor: "white", }}>
-                        <textarea cols={60} className="bp3-input .modifier" dir="auto"></textarea>
+                        <textarea cols={150} className="bp3-input .modifier" dir="auto" onBlur={props.onChange} defaultValue={props.defaultValue}></textarea>
                     </div>
                 </div>
 
@@ -383,65 +251,30 @@ export default function ItemDetail(props) {
             <Card interactive={false} elevation={Elevation.FOUR} className="col-auto w-100 h-100" style={{ paddingLeft: -10, paddingBottom: 10, borderWidth: 2, borderColor: 'black', borderRadius: 10, backgroundColor: "white" }}>
                 <div className="row px-4">
                     <div className="col text-black text-left px-4" style={{ backgroundColor: 'transparent' }} >
-                        <div className="row"><span className={styles.title}>Quotation (New Record)</span></div>
-
-                        {/****  Header Information ***/}
-                        <SectionHeader title="Header Information" />
-                        <Static label="JWT: " text={props.token} />
+                        <div className="row"><span className={styles.title}>Vendor (New Record)</span></div>
 
                         <div className="row">
                             <div className="col">
-                                <div className="row">
-                                    <div className="col-lg-8">
-                                        <Input label="Quotation No." placeholder="" spacer={30} intent="" required />
-                                    </div>
-                                    <div className="col-lg-4">
-                                        <Input label="Revision No." placeholder="" spacer={30} intent="" />
-                                    </div>
-                                </div>
-                                <div className="row">
-                                    <div className="col-lg-8">
-                                        <Input label="Customer Code" searchlabel="Customer" placeholder="" spacer={30} action="goSearch" intent="" defaultValue={customer} required />
-                                    </div>
-                                    <div className="col-lg-4">
-                                        <Input label="Category" placeholder="" spacer={30} intent="" defaultValue={category} />
-                                    </div>
-                                </div>
-                                <Input label="Customer Name" placeholder="" spacer={30} intent="" defaultValue={customername} />
-                                <Input label="Letterhead By" searchlabel="Letterhead" placeholder="" spacer={30} action="goSearchLetterHead" intent="" defaultValue={letterhead} />
-                                <Input label="Payment Code" placeholder="" spacer={30} intent="" defaultValue={paycode} validate="paycode" />
-                                <Input label="Payment Terms" placeholder="" spacer={30} intent="" defaultValue={paydesc} />
-                                <Input label="Attn" placeholder="" spacer={30} intent="" />
-                            </div>
-                            <div className="col">
-                                <div className="row">
-                                    <div className="col-lg-4">
-                                        <Datefield label="Date" />
-                                    </div>
-                                    <div className="col-lg-8">
-                                        <Input label="Issued By" placeholder="" spacer={30} intent="" />
-                                    </div>
-                                </div>
-                                <TextAreafield label="Remarks"/>
-                                <Input label="Trade Terms" placeholder="" spacer={30} intent="" />
-                                <div className="row">
-                                    <div className="col-lg-5">
-                                        <Suggest label="Currency" spacer={0} intent="" />
-                                    </div>
-                                    <div className="col-lg-7">
-                                        <Input label="Exchange Rate" placeholder="" spacer={30} intent="" defaultValue={exchangerate} />
-                                    </div>
-                                </div>
-                                <Static label="Total Amount" text="0.00" spacer={30} intent="" />
+                                <Input label="Vendor Code" placeholder="" spacer={30} intent="" onChange={handlesetCode} defaultValue={code} required />
+                                <Input label="Name" placeholder="" spacer={30} intent="" onChange={handlesetName} defaultValue={name} required />
+                                <Input label="Building" placeholder="" spacer={30} intent="" onChange={handlesetBuilding} defaultValue={building} />
+                                <Input label="Street" placeholder="" spacer={30} intent="" onChange={handlesetStreet} defaultValue={street} />
+                                <Input label="Area" placeholder="" spacer={30} intent="" onChange={handlesetArea} defaultValue={area} />
+                                <Input label="Country" placeholder="" spacer={30} intent="" onChange={handlesetCountry} defaultValue={country} />
+                                <TextAreafield label="Remarks" onChange={handlesetRemarks} defaultValue={remarks} />
+                                <Input label="Contact" placeholder="" spacer={30} intent="" onChange={handlesetContact} defaultValue={contact} />
+                                <Input label="Position" placeholder="" spacer={30} intent="" onChange={handlesetPosition} defaultValue={position} />
+                                <Input label="Email" placeholder="" spacer={30} intent="" onChange={handlesetEmail} defaultValue={email} />
+                                <Input label="Phone" placeholder="" spacer={30} intent="" onChange={handlesetPhone} defaultValue={phone} />
+                                <Input label="Fax" placeholder="" spacer={30} intent="" onChange={handlesetFax} defaultValue={fax} />
+                                <Input label="Mobile Phone" placeholder="" spacer={30} intent="" onChange={handlesetMobile} defaultValue={mobile} />
                             </div>
                         </div>
 
                         <Spacer height={20} />
 
-                        {/****  Detail Information ***/}
-                        <ActionButtons title="Details" />
-                        <Spacer height={20} />
-                        <DataGrid />
+                        {/****  Action Buttons ***/}
+                        <ActionButtons/>
                         <Spacer height={20} />
 
                     </div>

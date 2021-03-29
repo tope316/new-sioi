@@ -1,10 +1,17 @@
-import { Card, Elevation, Classes as CoreClasses } from "@blueprintjs/core"
+import { AnchorButton, Card, Elevation, Classes as CoreClasses, Intent, Position } from "@blueprintjs/core"
+import { IToasterProps, IToastProps, Toast, Toaster, ToasterPosition } from "@blueprintjs/core"
 import { useMemo, useState, useEffect } from 'react'
 import styles from './Vendor.module.css'
-import Table from "./Table";
-import axios from "axios";
+import Table from "./Table"
+import axios from "axios"
+import { useRouter } from 'next/router'
+
+let toaster: Toaster
 
 export default function TableList(props) {
+
+    const [data, setData] = useState([])
+    const router = useRouter()
 
     const Spacer = (props) => {
         return (
@@ -27,7 +34,38 @@ export default function TableList(props) {
         )
     }
 
-    const [data, setData] = useState([]);
+    const refHandlers = {
+        mytoaster: (ref: Toaster) => (toaster = ref),
+    }
+
+    const addToast = (toast: IToastProps) => {
+        toast.timeout = 5000;
+        toaster.show(toast)
+    }
+
+    const deleterecord = async (e, vendorid) => {
+        const options = {
+            headers: {'Authorization': 'Bearer ' + `${props.token}`}
+        }
+        const result = await axios.delete(`http://localhost:3000/api/v1/vendor/delete?id=${vendorid}`, options)
+        if (result.status == 200) {
+            const res = await axios.get('http://localhost:3000/api/v1/vendor/queryAll', options)
+            setData(res.data.data);
+            addToast({
+                icon: "tick",
+                intent: Intent.PRIMARY,
+                message: (
+                    <>
+                        Successfully deleted data. Vendor Code: <em>{vendorid}</em>
+                    </>
+                )
+            })
+        }
+    }
+
+    const viewrecord = async (e, vendorid) => {
+        router.push(`/vendor/view/${vendorid}`)
+    }
 
     /* 
         - Columns is a simple array right now, but it will contain some logic later on. It is recommended by react-table to memoize the columns data
@@ -35,43 +73,43 @@ export default function TableList(props) {
     */
     const columns = useMemo(
         () => [
-        {
-            Header: "Company Code",
-            accessor: "Company_Code"
-        },
-        {
-            Header: "Company",
-            accessor: "Company"
-        },
-        {
-            Header: "Phone",
-            accessor: "Phone"
-        },
-        {
-            Header: "Remarks",
-            accessor: "Remarks"
-        },
-        {
-            Header: "Contact",
-            accessor: "Contact"
-        },
-        {
-            Header: "Email Address",
-            accessor: "email"
-        },
-        {
-            Header: "Actions",
-            accessor: "id",
-            Cell: ({ cell: { value } }) => {
-                return (
-                    <>
-                    <a className={styles.badge} href={`api/edit/id/${value}`}>Edit</a>&nbsp;&nbsp;
-                    <a className={styles.badge} href={`api/view/id/${value}`}>View</a>&nbsp;&nbsp;
-                    <a className={styles.badge} href={`api/delete/id/${value}`}>Delete</a>
-                    </>
-                )
+            {
+                Header: "Company Code",
+                accessor: "Company_Code"
+            },
+            {
+                Header: "Company",
+                accessor: "Company"
+            },
+            {
+                Header: "Phone",
+                accessor: "Phone"
+            },
+            {
+                Header: "Remarks",
+                accessor: "Remarks"
+            },
+            {
+                Header: "Contact",
+                accessor: "Contact"
+            },
+            {
+                Header: "Email Address",
+                accessor: "email"
+            },
+            {
+                Header: "Actions",
+                accessor: "id",
+                Cell: ({ cell: { value } }) => {
+                    return (
+                        <>
+                            <a className={styles.badge} href={`api/edit/id/${value}`}>Edit</a>&nbsp;&nbsp;
+                            <AnchorButton text="View" intent="primary" onClick={(e) => viewrecord(e, value)} />&nbsp;&nbsp;
+                            <AnchorButton text="Delete" intent="danger" onClick={(e) => deleterecord(e, value)} />
+                        </>
+                    )
+                }
             }
-        }
         ],
         []
     );
@@ -81,26 +119,9 @@ export default function TableList(props) {
             const options = {
                 headers: {'Authorization': 'Bearer ' + `${props.token}`}
             }
-            //const result = await axios('https://api.tvmaze.com/search/shows?q=snow')
-            //setData(result.data);
             const result = await axios.get('http://localhost:3000/api/v1/vendor/queryAll', options)
             console.log(result.data.data)
             setData(result.data.data);
-            
-            /*await fetch('http://localhost:3000/api/v1/vendor/queryAll', {
-                method: 'GET',
-                headers: { 
-                    'Accept': 'application/json', 
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + `${props.token}`
-                },
-              }).then(function (a) {
-                return a.json(); // call the json method on the response to get JSON
-              })
-              .then(function (json) {
-                  console.log(json)
-                  //setData(json.data);
-              })*/
         })();
     }, []);
 
@@ -118,6 +139,7 @@ export default function TableList(props) {
                     </div>
                 </div>
             </Card>
+            <Toaster ref={refHandlers.mytoaster} position={Position.TOP} />
         </div>
     )
 }
