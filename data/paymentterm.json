@@ -1,0 +1,7 @@
+[
+    {"code":"001","description":"C.O.D","duebase":"1","duedays":"0","duemonths":"0","adddaysfirst":"false"},
+    {"code":"30","description":"30 Days","duebase":"2","duedays":"30","duemonths":"0","adddaysfirst":"false"},
+    {"code":"002","description":"14-DAYS AFTER INVOICE DATE","duebase":"1","duedays":"14","duemonths":"0","adddaysfirst":"false"},
+    {"code":"M45","description":"45-DAYS AFTER END OF THE MONTH","duebase":"2","duedays":"45","duemonths":"0","adddaysfirst":"false"},
+    {"code":"M210","description":"210-DAYS AFTER END OF MONTH","duebase":"1","duedays":"0","duemonths":"7","adddaysfirst":"false"}
+]

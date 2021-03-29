@@ -1,0 +1,10 @@
+
+#username::placeholder {
+    color: rgb(235, 235, 235);
+    font-size: small;
+}
+
+#password::placeholder {
+    color: rgb(235, 235, 235);
+    font-size: small;
+}  

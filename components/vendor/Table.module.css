@@ -1,0 +1,65 @@
+/* Table Component */
+
+.mytable {
+  border-spacing: 0;
+  border: 1px solid #ededed;
+}
+.mytable tr:last-child td {
+  border-bottom: 0;
+}
+.mytable th,
+.mytable td {
+  margin: 0;
+  padding: 0.5rem;
+  border-bottom: 1px solid #ededed;
+  border-right: 1px solid #ededed;
+  position: relative;
+}
+.mytable th:last-child,
+.mytable td:last-child {
+  border-right: 0;
+}
+.mytable tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.mytable tr:nth-child(odd) {
+  background-color: #fff;
+}
+
+.mytable th::before {
+  position: absolute;
+  right: 15px;
+  top: 16px;
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+}
+.mytable th.sort-asc::before {
+  border-bottom: 5px solid #22543d;
+}
+.mytable th.sort-desc::before {
+  border-top: 5px solid #22543d;
+}
+  
+.myinput {
+    padding: 10px;
+    margin-bottom: 20px;
+    font-size: 18px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    box-shadow: none;
+}
+
+.badge {
+    background-color: #9ae6b4;
+    color: #22543d;
+    margin-right: 4px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
