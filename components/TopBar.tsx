@@ -24,7 +24,12 @@ export default function TopBar(props) {
 
   async function handlelogout(e) {
     e.preventDefault()
-    removeCookie('jwt')
+    //removeCookie("jwt")
+    setCookie("jwt", 'json.data.token', {
+      path: "/",
+      maxAge: -1, // Expires now
+      sameSite: true,
+    })
     router.push("/login")
   }
 

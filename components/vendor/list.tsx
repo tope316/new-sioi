@@ -67,6 +67,10 @@ export default function TableList(props) {
         router.push(`/vendor/view/${vendorid}`)
     }
 
+    const editrecord = async (e, vendorid) => {
+        router.push(`/vendor/edit/${vendorid}`)
+    }
+
     /* 
         - Columns is a simple array right now, but it will contain some logic later on. It is recommended by react-table to memoize the columns data
         - Here in this example, we have grouped our columns into two headers. react-table is flexible enough to create grouped table headers
@@ -103,7 +107,7 @@ export default function TableList(props) {
                 Cell: ({ cell: { value } }) => {
                     return (
                         <>
-                            <a className={styles.badge} href={`api/edit/id/${value}`}>Edit</a>&nbsp;&nbsp;
+                            <AnchorButton text="Edit" intent="primary" onClick={(e) => editrecord(e, value)} />&nbsp;&nbsp;
                             <AnchorButton text="View" intent="primary" onClick={(e) => viewrecord(e, value)} />&nbsp;&nbsp;
                             <AnchorButton text="Delete" intent="danger" onClick={(e) => deleterecord(e, value)} />
                         </>
