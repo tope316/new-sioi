@@ -111,7 +111,63 @@ export default function ItemDetail(props) {
         )
     }
 
+    const nameValidation = (fieldName, fieldValue) => {
+        if (fieldValue.trim() === '') {
+            return `${fieldName} is required`;
+        }
+        if (/[^a-zA-Z -]/.test(fieldValue)) {
+            return 'Invalid characters';
+        }
+        if (fieldValue.trim().length < 3) {
+            return `${fieldName} needs to be at least three characters`;
+        }
+        return null;
+    };
+    
+    const emailValidation = email => {
+        if (
+            /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+            email,
+            )
+        ) {
+            return null;
+        }
+        if (email.trim() === '') {
+            return null
+        }
+        return 'Please enter a valid email';
+    };
+
     const saveData = async () => {
+
+        // Validate Form
+        const name_error = nameValidation('Company Name', name)
+        if (name_error) {
+            addToast({
+                icon: "warning-sign",
+                intent: Intent.DANGER,
+                message: (
+                    <>
+                        <em>{name_error}</em>
+                    </>
+                )
+            })
+            return false
+        }
+        const email_error = emailValidation(email)
+        if (email_error) {
+            addToast({
+                icon: "warning-sign",
+                intent: Intent.DANGER,
+                message: (
+                    <>
+                        <em>{email_error}</em>
+                    </>
+                )
+            })
+            return false
+        }
+
         const options = {
             headers: {'Authorization': 'Bearer ' + `${props.token}`}
         }

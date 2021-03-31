@@ -14,8 +14,8 @@ export default function ItemDetail(props) {
     const router = useRouter()
     const [isOpen, setIsOpen] = useState(false)
 
-    const [code, setCode] = useState()
-    const [name, setName] = useState()
+    const [code, setCode] = useState('')
+    const [name, setName] = useState('')
     const [building, setBuilding] = useState()
     const [street, setStreet] = useState()
     const [area, setArea] = useState()
@@ -121,29 +121,76 @@ export default function ItemDetail(props) {
         toaster.show(toast)
     }
 
-    const errorToast = (e) => {
-        addToast({
-            icon: "warning-sign",
-            intent: Intent.DANGER,
-            message:
-                "You do not have permissions to perform this action. \
-    Please contact your system administrator to request the appropriate access rights.",
-        })
-    }
-
-    const successToast = () => {
-        addToast({
-            icon: "tick",
-            intent: Intent.PRIMARY,
-            message: (
-                <>
-                    Successfully saved data. REF: <em>455-200</em>
-                </>
+    const nameValidation = (fieldName, fieldValue) => {
+        if (fieldValue.trim() === '') {
+            return `${fieldName} is required`;
+        }
+        if (/[^a-zA-Z -]/.test(fieldValue)) {
+            return 'Invalid characters';
+        }
+        if (fieldValue.trim().length < 3) {
+            return `${fieldName} needs to be at least three characters`;
+        }
+        return null;
+    };
+    
+    const emailValidation = email => {
+        if (
+            /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+            email,
             )
-        })
-    }
+        ) {
+            return null;
+        }
+        if (email.trim() === '') {
+            return null
+        }
+        return 'Please enter a valid email';
+    };
 
     const saveData = async () => {
+
+        // Validate Form
+        const code_error = nameValidation('Company Code', code)
+        if (code_error) {
+            addToast({
+                icon: "warning-sign",
+                intent: Intent.DANGER,
+                message: (
+                    <>
+                        <em>{code_error}</em>
+                    </>
+                )
+            })
+            return false
+        }
+        const name_error = nameValidation('Company Name', name)
+        if (name_error) {
+            addToast({
+                icon: "warning-sign",
+                intent: Intent.DANGER,
+                message: (
+                    <>
+                        <em>{name_error}</em>
+                    </>
+                )
+            })
+            return false
+        }
+        const email_error = emailValidation(email)
+        if (email_error) {
+            addToast({
+                icon: "warning-sign",
+                intent: Intent.DANGER,
+                message: (
+                    <>
+                        <em>{email_error}</em>
+                    </>
+                )
+            })
+            return false
+        }
+
         const options = {
             headers: {'Authorization': 'Bearer ' + `${props.token}`}
         }
@@ -218,11 +265,6 @@ export default function ItemDetail(props) {
                 <Spacer height={props.spacer} />
             </div>
         )
-    }
-
-    const validateData = (e) => {
-        /** PERFORM VALIDATION ***/
-        if (e.target.value == '') alert('Please input value')
     }
 
     const TextAreafield = (props) => {
