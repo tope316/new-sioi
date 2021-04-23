@@ -12,7 +12,12 @@ export default function SideMenu(props) {
     const goVendor = (e) => {
         e.preventDefault()
         router.push("/vendor/list")
-      }
+    }
+
+    const printReport = (e) => {
+        e.preventDefault()
+        router.push("/report")
+    }
 
     return (
         <div className="col-auto pl-3 d-none d-md-block pt-0 mt-0">
@@ -24,7 +29,7 @@ export default function SideMenu(props) {
                     <div className="row pr-2"><button className="w-100 justify-content-start bp3-button bp3-minimal bp3-icon-grid-view">Purchase Order</button></div>
                     <div className="row pr-2"><button className="w-100 justify-content-start bp3-button bp3-minimal bp3-icon-person" onClick={goVendor}>Vendor</button></div>
                     <div className="row pr-2"><button className="w-100 justify-content-start bp3-button bp3-minimal bp3-icon-calendar">Schedule</button></div>
-                    <div className="row pr-2"><button className="w-100 justify-content-start bp3-button bp3-minimal bp3-icon-grouped-bar-chart">Report</button></div>
+                    <div className="row pr-2"><button className="w-100 justify-content-start bp3-button bp3-minimal bp3-icon-grouped-bar-chart" onClick={printReport}>Report</button></div>
                     <div className="row pr-2"><button className="w-100 justify-content-start bp3-button bp3-minimal bp3-icon-cube">Inventory</button></div>
                     <div className="row pr-2"><button className="w-100 justify-content-start bp3-button bp3-minimal bp3-icon-cog">Settings</button></div>
                 </div>

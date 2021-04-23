@@ -5,6 +5,7 @@ import { useRecoilState } from 'recoil'
 import SideMenu from '../components/SideMenu'
 import Dashboard from '../components/Dashboard'
 import Widget from '../components/Widget'
+import DXReport from '../components/DXReport'
 import { useState } from 'react'
 import { DisplayMode } from '../core/Global'
 
@@ -23,6 +24,7 @@ export default function Home({ data }) {
           <div className="col">
             {mode === DisplayMode.dashboard && <Dashboard />}
             {mode === DisplayMode.widget && <Widget />}
+            {mode === DisplayMode.report && <DXReport />}
           </div>
         </div>
       </div>

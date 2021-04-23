@@ -38,6 +38,7 @@ export default function Table({columns, data}) {
         />
 
         &nbsp;&nbsp;&nbsp;<a className={styles.badge} href="./new">Add New</a>
+        &nbsp;<a className={styles.badge} href="./report">Print</a>
 
         <table className={styles.mytable} {...getTableProps()}>
             <thead>
