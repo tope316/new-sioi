@@ -95,7 +95,7 @@ export default function ItemDetail(props) {
         if (fieldValue.trim() === '') {
             return `${fieldName} is required`;
         }
-        if (/[^a-zA-Z -]/.test(fieldValue)) {
+        if (/[^a-zA-Z0-9 -]/.test(fieldValue)) {
             return 'Invalid characters';
         }
         if (fieldValue.trim().length < 3) {
@@ -105,15 +105,15 @@ export default function ItemDetail(props) {
     };
     
     const emailValidation = email => {
+        if (email.trim() === '') {
+            return null
+        }
         if (
             /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
             email,
             )
         ) {
             return null;
-        }
-        if (email.trim() === '') {
-            return null
         }
         return 'Please enter a valid email';
     };

@@ -17,9 +17,9 @@ export default function VendorReport(props) {
         )
     }
 
-    const goDashboard = (e) => {
+    const goVendor = (e) => {
         e.preventDefault()
-        router.push("/dashboard")
+        router.push("/vendor/list")
     }
 
     return (
@@ -32,7 +32,7 @@ export default function VendorReport(props) {
                     <div className="row text-align-center" style={{ backgroundColor: 'transparent' }}>
                         <div className="col"><span className={styles.sectionHeader}>Report Preview</span></div>
                         <div className="col" style={{ textAlign: 'end' }}>
-                            <Button text="GO BACK" intent={Intent.PRIMARY} small={true} style={{ marginRight: 5 }} onClick={goDashboard} />
+                            <Button text="GO BACK" intent={Intent.PRIMARY} small={true} style={{ marginRight: 5 }} onClick={goVendor} />
                         </div>
                         <hr className={styles.hr} />
                         <div className="col w-100 overflow-auto" style={{ height: 750 }}>
